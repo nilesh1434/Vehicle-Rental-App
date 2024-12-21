@@ -19,18 +19,18 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:layout_marginTop="15dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:background="@drawable/edittextshape"
         app:boxStrokeWidth="0dp"
         app:boxStrokeWidthFocused="0dp"
-        android:background="@drawable/edittextshape"
         app:endIconDrawable="@drawable/baseline_arrow_circle_down_24"
         app:endIconTint="@color/black"
-        app:layout_constraintTop_toBottomOf="@+id/textView11">
+        app:layout_constraintTop_toBottomOf="@+id/textView11"
+        tools:layout_editor_absoluteX="16dp">
 
         <AutoCompleteTextView
             android:id="@+id/listOfLocation"
@@ -47,13 +47,15 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="400dp"
         android:layout_marginEnd="16dp"
         android:fontFamily="sans-serif"
         android:text="To provide personalized services and accurate information for your area, we require access to your location. This will help us tailor content and features specifically for you. Please grant location access in the next step."
         android:textAlignment="center"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="607dp"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
         tools:ignore="MissingConstraints" />
 </androidx.constraintlayout.widget.ConstraintLayout>
