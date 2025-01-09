@@ -2,12 +2,15 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/white">
 
     <androidx.cardview.widget.CardView
-        android:layout_width="350dp"
+        android:layout_width="0dp"
         android:layout_height="87dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="10dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="10dp"
         app:cardCornerRadius="22dp"
         app:cardElevation="4dp"
@@ -21,7 +24,7 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:id="@+id/imageView5"
+                android:id="@+id/vehicleImage"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
                 android:layout_marginLeft="8dp"
@@ -40,9 +43,9 @@
                 android:text="Vehicle Name"
                 android:textColor="@color/black"
                 android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView5"
-                app:layout_constraintStart_toEndOf="@+id/imageView5"
-                app:layout_constraintTop_toTopOf="@+id/imageView5" />
+                app:layout_constraintBottom_toBottomOf="@+id/vehicleImage"
+                app:layout_constraintStart_toEndOf="@+id/vehicleImage"
+                app:layout_constraintTop_toTopOf="@+id/vehicleImage" />
 
             <TextView
                 android:id="@+id/PricePopular"

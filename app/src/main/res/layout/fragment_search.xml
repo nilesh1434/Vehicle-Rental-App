@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".Fragment.SearchFragment">
 
     <TextView
@@ -11,26 +12,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="SEARCH"
+        android:text="Search"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.SearchView
+    <SearchView
         android:id="@+id/searchView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginRight="16dp"
-        android:iconifiedByDefault="false"
-        android:searchIcon="@drawable/baseline_search_24"
         android:background="@drawable/searchshape"
-        android:queryHint="Search here"
+        android:iconifiedByDefault="false"
         android:queryBackground="@android:color/transparent"
+        android:queryHint="Search here"
+        android:searchIcon="@drawable/baseline_search_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView23"/>
+        app:layout_constraintTop_toBottomOf="@+id/textView23" />
 
 
     <androidx.recyclerview.widget.RecyclerView

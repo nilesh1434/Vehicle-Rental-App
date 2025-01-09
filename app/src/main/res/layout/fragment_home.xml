@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".Fragment.HomeFragment">
 
     <androidx.cardview.widget.CardView
@@ -23,10 +24,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:iss_auto_cycle="true"
+            app:iss_delay="5000"
             app:iss_no_dots="true"
             app:iss_period="5000"
-            app:iss_delay="5000"
-            app:iss_text_align="CENTER"/>
+            app:iss_text_align="CENTER" />
     </androidx.cardview.widget.CardView>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -37,7 +38,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/viewAllRides" />
+        app:layout_constraintTop_toBottomOf="@+id/viewAllRides"
+        tools:listitem="@layout/popular_item" />
 
     <TextView
         android:id="@+id/textView19"

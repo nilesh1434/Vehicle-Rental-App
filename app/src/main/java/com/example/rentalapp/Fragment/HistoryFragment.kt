@@ -1,60 +1,140 @@
 package com.example.rentalapp.Fragment
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.rentalapp.R
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.example.rentalapp.RecentOrderVehicles
+import com.example.rentalapp.adapter.BuyAgainAdapter
+import com.example.rentalapp.databinding.FragmentHistoryBinding
+import com.example.rentalapp.model.OrderDetails
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [HistoryFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class HistoryFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private lateinit var binding: FragmentHistoryBinding
+    private lateinit var buyAgainAdapter: BuyAgainAdapter
+    private lateinit var auth: FirebaseAuth
+    private lateinit var database: FirebaseDatabase
+    private lateinit var userId: String
+    private var listOfOrderVehicle: MutableList<OrderDetails> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        binding = FragmentHistoryBinding.inflate(layoutInflater, container, false)
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_history, container, false)
+
+        //initialize Firebase Auth
+        auth = FirebaseAuth.getInstance()
+        //initialize Firebase database
+        database = FirebaseDatabase.getInstance()
+        //retrieve and display user data history
+        retrieveBuyHistory()
+        //recently bought button click
+        binding.recentBuyVehicle.setOnClickListener {
+            seeAllRecentBuyVehicles()
+        }
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment HistoryFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            HistoryFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    //function to see all history
+    private fun seeAllRecentBuyVehicles() {
+        listOfOrderVehicle.firstOrNull()?.let { recentBuy ->
+            val intent = Intent(requireContext(), RecentOrderVehicles::class.java)
+            intent.putExtra("RecentBuyOrderVehicle", ArrayList(listOfOrderVehicle))
+            startActivity(intent)
+        }
+    }
+
+    //function to retrieve vehicles bought recently
+    private fun retrieveBuyHistory() {
+        binding.recentBuyVehicle.visibility = View.INVISIBLE
+        userId = auth.currentUser?.uid ?: ""
+        val buyVehicleReference: DatabaseReference =
+            database.reference.child("user").child(userId).child("BuyHistory")
+        val shortingQuery = buyVehicleReference.orderByChild("currentTime")
+
+        shortingQuery.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (buySnapshot in snapshot.children) {
+                    val buyHistoryVehicle = buySnapshot.getValue(OrderDetails::class.java)
+                    buyHistoryVehicle?.let { listOfOrderVehicle.add(it) }
+                }
+                listOfOrderVehicle.reverse()
+                if (listOfOrderVehicle.isNotEmpty()) {
+                    //display most recent order details
+                    setDataInRecentBuyVehicle()
+                    //setup the recyclerview with previous order details
+                    setPreviouslyBuyVehicleRecyclerView()
                 }
             }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+
+        })
+    }
+
+    //function to display most recent order details
+    private fun setDataInRecentBuyVehicle() {
+        binding.recentBuyVehicle.visibility = View.VISIBLE
+        val recentOrderVehicle = listOfOrderVehicle.firstOrNull()
+        recentOrderVehicle?.let {
+            with(binding) {
+                buyAgainVehicleName.text = it.vehicleNames?.firstOrNull() ?: ""
+                buyAgainVehiclePrice.text = it.vehiclePrices?.firstOrNull() ?: ""
+                val image = it.vehicleImages?.firstOrNull() ?: ""
+                val uri = Uri.parse(image)
+                Glide.with(requireContext()).load(uri).into(buyAgainVehicleImage)
+
+                listOfOrderVehicle.reverse()
+                if (listOfOrderVehicle.isNotEmpty()) {
+
+                }
+            }
+        }
+    }
+
+    //function to setup the recyclerview with previous order details
+    private fun setPreviouslyBuyVehicleRecyclerView() {
+        val buyAgainVehicleName = mutableListOf<String>()
+        val buyAgainVehiclePrice = mutableListOf<String>()
+        val buyAgainVehicleImage = mutableListOf<String>()
+        for (i in 1 until listOfOrderVehicle.size) {
+            listOfOrderVehicle[i].vehicleNames?.firstOrNull()?.let {
+                buyAgainVehicleName.add(it)
+                listOfOrderVehicle[i].vehiclePrices?.firstOrNull()?.let {
+                    buyAgainVehiclePrice.add(it)
+                    listOfOrderVehicle[i].vehicleImages?.firstOrNull()?.let {
+                        buyAgainVehicleImage.add(it)
+                    }
+                }
+                val rv = binding.BuyAgainRecyclerView
+                rv.layoutManager = LinearLayoutManager(requireContext())
+                buyAgainAdapter = BuyAgainAdapter(
+                    buyAgainVehicleName,
+                    buyAgainVehiclePrice,
+                    buyAgainVehicleImage,
+                    requireContext()
+                )
+                rv.adapter = buyAgainAdapter
+            }
+        }
     }
 }
