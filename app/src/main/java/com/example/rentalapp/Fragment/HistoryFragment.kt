@@ -52,7 +52,7 @@ class HistoryFragment : Fragment() {
         return binding.root
     }
 
-    //function to see all history
+    //function to see all recently bought history
     private fun seeAllRecentBuyVehicles() {
         listOfOrderVehicle.firstOrNull()?.let { recentBuy ->
             val intent = Intent(requireContext(), RecentOrderVehicles::class.java)
@@ -103,10 +103,10 @@ class HistoryFragment : Fragment() {
                 val uri = Uri.parse(image)
                 Glide.with(requireContext()).load(uri).into(buyAgainVehicleImage)
 
-                listOfOrderVehicle.reverse()
-                if (listOfOrderVehicle.isNotEmpty()) {
-
-                }
+//                listOfOrderVehicle.reverse()
+//                if (listOfOrderVehicle.isNotEmpty()) {
+//
+//                }
             }
         }
     }
